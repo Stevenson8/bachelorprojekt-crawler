@@ -1,10 +1,13 @@
 package org.main;
 
 import analysis.*;
+import configuration.configuration;
 import model.AnalysisResult;
 import model.Website;
 import model.WebsiteResult;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +44,17 @@ public class Controller {
 
     private void setupWebDriver(){
 
-        //Todo
+        System.setProperty("webdriver.chrome.driver", configuration.WEBDRIVER_URL);
+
+        //Set whether driver is headless
+        if(configuration.SERVER_IS_HEADLESS){
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--headless");
+            driver = new ChromeDriver(options);
+        }
+        else{
+            driver=new ChromeDriver();
+        }
     }
 
     private String readNextWebsite(){
@@ -65,6 +78,7 @@ public class Controller {
     }
 
     private void closeWebDriver(){
-        //Todo
+        driver.close();
+        driver.quit();
     }
 }
