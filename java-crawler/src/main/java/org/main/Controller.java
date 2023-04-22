@@ -1,13 +1,10 @@
 package org.main;
 
-import Configuration.Configuration;
 import analysis.*;
 import model.AnalysisResult;
 import model.Website;
 import model.WebsiteResult;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.util.ArrayList;
 import java.util.List;

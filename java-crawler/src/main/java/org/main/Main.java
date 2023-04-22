@@ -1,12 +1,12 @@
 package org.main;
 
-import Configuration.Configuration;
+import configuration.configuration;
 
 public class Main {
     public static void main(String[] args) {
 
         System.out.println("Hello world!");
         Controller controller=new Controller();
-        controller.doAnalysis(Configuration.NUMBER_OF_WEBSITES);
+        controller.doAnalysis(configuration.NUMBER_OF_WEBSITES);
     }
 }
