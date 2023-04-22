@@ -47,7 +47,7 @@ public class Controller {
         System.setProperty("webdriver.chrome.driver", Configuration.WEBDRIVER_URL);
 
         //Set whether driver is headless
-        if(Configuration.SERVER_IS_HEADLESS){
+        if(Configuration.WEBDRIVER_IS_HEADLESS){
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--headless");
             driver = new ChromeDriver(options);
