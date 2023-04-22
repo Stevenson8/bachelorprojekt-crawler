@@ -1,7 +1,7 @@
 package org.main;
 
 import analysis.*;
-import configuration.configuration;
+import configuration.Configuration;
 import model.AnalysisResult;
 import model.Website;
 import model.WebsiteResult;
@@ -44,10 +44,10 @@ public class Controller {
 
     private void setupWebDriver(){
 
-        System.setProperty("webdriver.chrome.driver", configuration.WEBDRIVER_URL);
+        System.setProperty("webdriver.chrome.driver", Configuration.WEBDRIVER_URL);
 
         //Set whether driver is headless
-        if(configuration.SERVER_IS_HEADLESS){
+        if(Configuration.SERVER_IS_HEADLESS){
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--headless");
             driver = new ChromeDriver(options);
