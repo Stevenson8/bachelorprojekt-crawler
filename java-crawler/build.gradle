@@ -15,6 +15,9 @@ dependencies {
 
     //Selenium Library for automating Web Browser
     implementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
+
+    // https://mvnrepository.com/artifact/mysql/mysql-connector-java
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.33'
 }
 
 test {

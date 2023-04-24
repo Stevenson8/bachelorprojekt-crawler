@@ -2,6 +2,7 @@ package org.main;
 
 import analysis.*;
 import configuration.Configuration;
+import database.DbWriter;
 import model.AnalysisResult;
 import model.Website;
 import model.WebsiteResult;
@@ -17,9 +18,11 @@ public class Controller {
     private AnalysisResult analysisResult;
     private WebDriver driver;
     private List<AnalysisStep> steps;
+    private DbWriter dbWriter;
 
     public Controller() {
         this.analysisResult=new AnalysisResult();
+        this.dbWriter=new DbWriter();
 
         this.steps=new ArrayList<AnalysisStep>();
         steps.add(new CookieCleaner());
@@ -38,6 +41,8 @@ public class Controller {
             Website website=new Website(url);
             analyzeWebsite(website);
         }
+
+        dbWriter.writeResultToDatabase(analysisResult);
 
         closeWebDriver();
     }
