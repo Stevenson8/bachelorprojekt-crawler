@@ -7,6 +7,6 @@ public class Main {
 
         System.out.println("Hello world!");
         Controller controller=new Controller();
-        controller.doAnalysis(Configuration.NUMBER_OF_WEBSITES);
+        controller.doAnalysis();
     }
 }

@@ -3,13 +3,15 @@ package configuration;
 import model.ERegion;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Configuration {
 
     public final static boolean WEBDRIVER_IS_HEADLESS =false;
     public final static String WEBDRIVER_URL= ("chromedriver_win32\\chromedriver.exe");
 
-    public final static int NUMBER_OF_WEBSITES=0;
-    public final static ERegion VPN_COUNTRY=ERegion.EU;
+    public final static int NUMBER_OF_WEBSITES=5;
+    public final static List<ERegion> REGIONS_TO_ANALYZE= List.of(ERegion.EU);
 
 }

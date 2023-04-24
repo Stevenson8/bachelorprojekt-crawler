@@ -2,6 +2,7 @@ package model;
 
 import com.sun.jdi.PrimitiveValue;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,9 +16,13 @@ public class Request {
 
     public Request(ERegion originRegion) {
         this.originRegion=originRegion;
+        this.cookies=new ArrayList<>();
     }
     public ERegion getOriginRegion() {
         return originRegion;
     }
 
+    public List<Cookie> getCookies() {
+        return cookies;
+    }
 }

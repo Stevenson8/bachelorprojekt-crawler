@@ -1,16 +1,35 @@
 package model;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AnalysisResult {
 
-    private Map<Website,WebsiteResult> analysisResult;
+    private Map<Website, List<Request>> analysisResult;
 
-    public void addWebsiteResult(Website website, WebsiteResult result){
-        analysisResult.put(website,result);
+    public AnalysisResult() {
+        this.analysisResult=new HashMap<>();
     }
 
-    public Map<Website,WebsiteResult> getAnalysisResult(){
+    public void addRequest(Website website, Request request){
+        if(analysisResult.keySet().contains(website)){
+            analysisResult.get(website).add(request);
+        }
+        else{
+            List<Request> requests=List.of(request);
+            analysisResult.put(website,requests);
+        }
+    }
+
+    public Map<Website,List<Request>> getAnalysisResult(){
         return analysisResult;
+    }
+
+    public boolean alreadyContainsRequestForWebsite(Website website){
+        return analysisResult.keySet().contains(website);
+    }
+    public List<Request> getRequests(Website website){
+        return analysisResult.get(website);
     }
 }

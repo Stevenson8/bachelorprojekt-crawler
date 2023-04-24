@@ -2,11 +2,9 @@ package org.main;
 
 import analysis.*;
 import configuration.Configuration;
+import csvreader.DomainCsvReader;
 import database.DbWriter;
-import model.AnalysisResult;
-import model.Request;
-import model.Website;
-import model.WebsiteResult;
+import model.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -20,10 +18,12 @@ public class Controller {
     private WebDriver driver;
     private List<AnalysisStep> steps;
     private DbWriter dbWriter;
+    private DomainCsvReader csvReader;
 
     public Controller() {
         this.analysisResult=new AnalysisResult();
         this.dbWriter=new DbWriter();
+        this.csvReader=new DomainCsvReader();
 
         this.steps=new ArrayList<AnalysisStep>();
         steps.add(new CookieCleaner());
@@ -32,15 +32,21 @@ public class Controller {
         steps.add(new CookieReader());
     }
 
-    public void doAnalysis(int numberOfWebsites){
+    public void doAnalysis(){
 
         setupWebDriver();
-        setupVPN();
+        csvReader.initializeReader(Configuration.NUMBER_OF_WEBSITES);
 
-        for(int i=0;i<numberOfWebsites;i++){
-            String url=readNextWebsite();
-            Website website=new Website(url);
-            analyzeWebsite(website);
+        for(ERegion region : Configuration.REGIONS_TO_ANALYZE) {
+
+            setupVPN(region);
+            csvReader.setToBeginning();
+
+            for (int i = 0; i < Configuration.NUMBER_OF_WEBSITES; i++) {
+                String url = csvReader.readNext();
+                Website website = new Website(url);
+                analyzeWebsite(website,region);
+            }
         }
 
         dbWriter.writeResultToDatabase(analysisResult);
@@ -63,29 +69,22 @@ public class Controller {
         }
     }
 
-    private void setupVPN(){
+    private void setupVPN(ERegion region){
         //Todo
     }
 
-    private String readNextWebsite(){
-        //Todo
-        return "";
-    }
+    private void analyzeWebsite(Website website,ERegion region){
+        Request request=new Request(region);
 
-    private void analyzeWebsite(Website website){
-
-        WebsiteResult result=new WebsiteResult();
-        Request request=new Request(Configuration.VPN_COUNTRY);
-
-        while(!result.isFinished()){
-            for(AnalysisStep step : steps){
-                step.execute(driver, result);
-            }
+        for (AnalysisStep step : steps) {
+            step.execute(driver, request);
         }
+
+        analysisResult.addRequest(website,request);
     }
 
     private void writeResultToDatabase(){
-        //Todo
+        dbWriter.writeResultToDatabase(analysisResult);
     }
 
     private void closeWebDriver(){
