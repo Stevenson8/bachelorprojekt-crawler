@@ -56,7 +56,7 @@ public class Controller {
 
     private void setupWebDriver(){
 
-        System.setProperty("webdriver.chrome.driver", Configuration.WEBDRIVER_URL);
+        System.setProperty("webdriver.chrome.driver", Configuration.WEBDRIVER_PATH);
 
         //Set whether driver is headless
         if(Configuration.WEBDRIVER_IS_HEADLESS){
