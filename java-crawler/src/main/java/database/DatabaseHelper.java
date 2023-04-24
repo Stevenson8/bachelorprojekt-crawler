@@ -23,9 +23,9 @@ public class DatabaseHelper {
 
     }
 
-    public void insertIntoWebsite(int id, String url){
+    public void insertIntoWebsite(int id, String url, String country){
         try {
-            String sql=String.format("insert into website values (%s,\"%s\")",id,url);
+            String sql=String.format("insert into website values (%s,\"%s\",\"%s\")",id,url,country);
             //String sql = String.format("insert into website values ('1,\"%s\"')", url);
             stmt.execute(sql);
         } catch (Exception e) {
@@ -33,18 +33,18 @@ public class DatabaseHelper {
         }
     }
 
-    public void insertIntoRequest(int id, String status,String region,boolean wasDirected,String redirectedPage,String protocol){
+    public void insertIntoRequest(int id, String status, String region, String date, boolean wasDirected, String redirectedPage, String protocol){
         try {
-            String sql = String.format("insert into request values (%s,\"%s\",\"%s\",%s,\"%s\",\"%s\")", id,status,region,wasDirected,redirectedPage,protocol);
+            String sql = String.format("insert into request values (%s,\"%s\",\"%s\",\"%s\",%s,\"%s\",\"%s\")", id,status,region,date,wasDirected,redirectedPage,protocol);
             stmt.execute(sql);
         } catch (Exception e) {
             System.err.println("Error at: insertIntoRequest\nmessage: " + e.getMessage());
         }
     }
 
-    public void insertIntoCookie(int id, String name,String value){
+    public void insertIntoCookie(int id, String name,String value,String expiryDate){
         try {
-            String sql = String.format("insert into cookie values (%s,\"%s\",\"%s\")", id,name, value);
+            String sql = String.format("insert into cookie values (%s,\"%s\",\"%s\",\"%s\")", id,name, value, expiryDate);
             stmt.execute(sql);
         } catch (Exception e) {
             System.err.println("Error at: insertIntoCookie\nmessage: " + e.getMessage());
