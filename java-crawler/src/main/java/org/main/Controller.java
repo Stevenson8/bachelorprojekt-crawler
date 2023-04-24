@@ -4,6 +4,7 @@ import analysis.*;
 import configuration.Configuration;
 import database.DbWriter;
 import model.AnalysisResult;
+import model.Request;
 import model.Website;
 import model.WebsiteResult;
 import org.openqa.selenium.WebDriver;
@@ -26,7 +27,6 @@ public class Controller {
 
         this.steps=new ArrayList<AnalysisStep>();
         steps.add(new CookieCleaner());
-        steps.add(new VpnSetter());
         steps.add(new WebsiteRedirector());
         steps.add(new InternetProtocolAnalyzer());
         steps.add(new CookieReader());
@@ -35,6 +35,7 @@ public class Controller {
     public void doAnalysis(int numberOfWebsites){
 
         setupWebDriver();
+        setupVPN();
 
         for(int i=0;i<numberOfWebsites;i++){
             String url=readNextWebsite();
@@ -62,6 +63,10 @@ public class Controller {
         }
     }
 
+    private void setupVPN(){
+        //Todo
+    }
+
     private String readNextWebsite(){
         //Todo
         return "";
@@ -70,6 +75,7 @@ public class Controller {
     private void analyzeWebsite(Website website){
 
         WebsiteResult result=new WebsiteResult();
+        Request request=new Request(Configuration.VPN_COUNTRY);
 
         while(!result.isFinished()){
             for(AnalysisStep step : steps){
