@@ -18,6 +18,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.33'
+
+    //Log4j
+    implementation 'log4j:log4j:1.2.17'
 }
 
 test {

@@ -24,7 +24,6 @@ public class DbWriter {
         int cookieIdCounter=1;
 
         for(Website website : result.keySet()){
-
             dbHelper.insertIntoWebsite(websiteIdCounter,website.getUrl(),"");
 
             for(Request request : result.get(website)){
