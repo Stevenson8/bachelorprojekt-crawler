@@ -28,14 +28,12 @@ public class DbWriter {
 
             for(Request request : result.get(website)){
 
-                dbHelper.insertIntoRequest(requestIdCounter,"status haha","EU","2022-01-01",false,"","HTTP");
+                dbHelper.insertIntoRequest(requestIdCounter,"status haha","EU","2022-01-01",false,"","HTTP",websiteIdCounter);
 
                 for(Cookie cookie:request.getCookies()){
-                    dbHelper.insertIntoCookie(cookieIdCounter,"ga_12345","hvoeurbgoesbg","2019-01-09");
-                    dbHelper.insertIntoRequestHasCookie(requestIdCounter,cookieIdCounter);
+                    dbHelper.insertIntoCookie(cookieIdCounter,"ga_12345","hvoeurbgoesbg","2019-01-09",requestIdCounter);
                     cookieIdCounter++;
                 }
-                dbHelper.insertIntoWebsiteHasRequest(websiteIdCounter,requestIdCounter);
                 requestIdCounter++;
             }
             websiteIdCounter++;

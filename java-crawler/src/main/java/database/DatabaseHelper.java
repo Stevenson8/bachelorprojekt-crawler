@@ -33,39 +33,21 @@ public class DatabaseHelper {
         }
     }
 
-    public void insertIntoRequest(int id, String status, String region, String date, boolean wasDirected, String redirectedPage, String protocol){
+    public void insertIntoRequest(int id, String status, String region, String date, boolean wasDirected, String redirectedPage, String protocol, int website){
         try {
-            String sql = String.format("insert into request values (%s,\"%s\",\"%s\",\"%s\",%s,\"%s\",\"%s\")", id,status,region,date,wasDirected,redirectedPage,protocol);
+            String sql = String.format("insert into request values (%s,\"%s\",\"%s\",\"%s\",%s,\"%s\",\"%s\",%s)", id,status,region,date,wasDirected,redirectedPage,protocol,website);
             stmt.execute(sql);
         } catch (Exception e) {
             System.err.println("Error at: insertIntoRequest\nmessage: " + e.getMessage());
         }
     }
 
-    public void insertIntoCookie(int id, String name,String value,String expiryDate){
+    public void insertIntoCookie(int id, String name, String value, String expiryDate, int request){
         try {
-            String sql = String.format("insert into cookie values (%s,\"%s\",\"%s\",\"%s\")", id,name, value, expiryDate);
+            String sql = String.format("insert into cookie values (%s,\"%s\",\"%s\",\"%s\",%s)", id,name, value, expiryDate, request);
             stmt.execute(sql);
         } catch (Exception e) {
             System.err.println("Error at: insertIntoCookie\nmessage: " + e.getMessage());
-        }
-    }
-
-    public void insertIntoWebsiteHasRequest(int websiteId, int requestId){
-        try {
-            String sql = String.format("insert into website_has_request values (%s,%s)", websiteId, requestId);
-            stmt.execute(sql);
-        } catch (Exception e) {
-            System.err.println("Error at: insertIntoWebsiteHasRequest\nmessage: " + e.getMessage());
-        }
-    }
-
-    public void insertIntoRequestHasCookie(int requestId, int cookieId){
-        try {
-            String sql = String.format("insert into request_has_cookie values (%s,%s)", requestId, cookieId);
-            stmt.execute(sql);
-        } catch (Exception e) {
-            System.err.println("Error at: insertIntoRequestHasCookie\nmessage: " + e.getMessage());
         }
     }
 
