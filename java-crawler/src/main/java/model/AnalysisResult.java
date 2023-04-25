@@ -7,6 +7,7 @@ import java.util.Map;
 public class AnalysisResult {
 
     private Map<Website, List<Request>> analysisResult;
+    private String usedIP="";
 
     public AnalysisResult() {
         this.analysisResult=new HashMap<>();
@@ -31,5 +32,13 @@ public class AnalysisResult {
     }
     public List<Request> getRequests(Website website){
         return analysisResult.get(website);
+    }
+
+    public void setUsedIP(String usedIP) {
+        this.usedIP = usedIP;
+    }
+
+    public String getUsedIP() {
+        return usedIP;
     }
 }

@@ -19,31 +19,32 @@ public class DbWriter {
         //Todo
         Map<Website, List<Request>> result=analysisResultResult.getAnalysisResult();
 
-        int websiteIdCounter=1;
-        int requestIdCounter=1;
-        int cookieIdCounter=1;
+        String ipUsed=analysisResultResult.getUsedIP();
+
+        List<String> websitesAlreadyCreated=dbHelper.selectUrlsFromWebsite();
+
 
         for(Website website : result.keySet()){
-            dbHelper.insertIntoWebsite(websiteIdCounter,website.getUrl(),"");
+            if(!websitesAlreadyCreated.contains(website.getUrl()))
+                dbHelper.insertIntoWebsite(website.getUrl(),"");
+            int websiteId= dbHelper.selectIdFromWebsiteWhere(website.getUrl());
 
             for(Request request : result.get(website)){
+                String status="status haha";
+                String originRegion=request.getOriginRegion().toString();
+                String date="2022-01-02";
+                boolean wasDirected=false;
+                String redirectedPage="";
+                String protocol="HTTP";
 
-                dbHelper.insertIntoRequest(requestIdCounter,"status haha","EU","2022-01-01",false,"","HTTP",websiteIdCounter);
+                dbHelper.insertIntoRequest(status,originRegion,ipUsed,date,wasDirected,redirectedPage,protocol,websiteId);
+                int requestId=dbHelper.selectIdFromRequestWhere(status,originRegion,ipUsed,date,wasDirected,redirectedPage,protocol,websiteId);
 
                 for(Cookie cookie:request.getCookies()){
-                    dbHelper.insertIntoCookie(cookieIdCounter,"ga_12345","hvoeurbgoesbg","2019-01-09",requestIdCounter);
-                    cookieIdCounter++;
+                    dbHelper.insertIntoCookie("ga_12345","hvoeurbgoesbg","2019-01-09",requestId);
                 }
-                requestIdCounter++;
             }
-            websiteIdCounter++;
         }
-
-
-
-
-
-
 
         dbHelper.close();
     }

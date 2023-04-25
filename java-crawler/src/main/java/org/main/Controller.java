@@ -5,12 +5,16 @@ import configuration.Configuration;
 import csvreader.DomainCsvReader;
 import database.DbWriter;
 import model.*;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Controller {
 
@@ -36,14 +40,16 @@ public class Controller {
 
         setupWebDriver();
 
-        csvReader.initializeReader(Configuration.NUMBER_OF_WEBSITES);
+        fetchMyIP();
 
+        csvReader.initializeReader(Configuration.NUMBER_OF_WEBSITES);
         csvReader.setToBeginning();
 
         for (int i = 0; i < Configuration.NUMBER_OF_WEBSITES; i++) {
             String url = csvReader.readNext();
             Website website = new Website(url);
             analyzeWebsite(website);
+
         }
 
         dbWriter.writeResultToDatabase(analysisResult);
@@ -79,6 +85,7 @@ public class Controller {
         if(Configuration.PROXY_IS_USED){
             options.addArguments("--proxy-server=" + Configuration.PROXY);
             optionsIsFilled=true;
+            System.out.println("Set Proxy!");
         }
 
         if(optionsIsFilled)
@@ -104,5 +111,28 @@ public class Controller {
     private void closeWebDriver(){
         driver.close();
         driver.quit();
+    }
+
+    private void fetchMyIP(){
+        String result="";
+
+        try {
+            URL urlObj = new URL(Configuration.MY_IP_API);
+            HttpURLConnection conn = (HttpURLConnection) urlObj.openConnection();
+            conn.setRequestMethod("GET");
+
+            if (conn.getResponseCode() == 200) {
+                Scanner sc = new Scanner(conn.getInputStream());
+                result = sc.nextLine();
+
+            } else {
+                System.out.println("Error fetching data");
+            }
+
+            conn.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        analysisResult.setUsedIP(result);
     }
 }
