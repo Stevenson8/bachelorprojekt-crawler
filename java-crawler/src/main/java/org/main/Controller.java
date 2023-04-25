@@ -35,18 +35,15 @@ public class Controller {
     public void doAnalysis(){
 
         setupWebDriver();
+
         csvReader.initializeReader(Configuration.NUMBER_OF_WEBSITES);
 
-        for(ERegion region : Configuration.REGIONS_TO_ANALYZE) {
+        csvReader.setToBeginning();
 
-            setupVPN(region);
-            csvReader.setToBeginning();
-
-            for (int i = 0; i < Configuration.NUMBER_OF_WEBSITES; i++) {
-                String url = csvReader.readNext();
-                Website website = new Website(url);
-                analyzeWebsite(website,region);
-            }
+        for (int i = 0; i < Configuration.NUMBER_OF_WEBSITES; i++) {
+            String url = csvReader.readNext();
+            Website website = new Website(url);
+            analyzeWebsite(website);
         }
 
         dbWriter.writeResultToDatabase(analysisResult);
@@ -58,23 +55,40 @@ public class Controller {
 
         System.setProperty("webdriver.chrome.driver", Configuration.WEBDRIVER_PATH);
 
-        //Set whether driver is headless
-        if(Configuration.WEBDRIVER_IS_HEADLESS){
-            ChromeOptions options = new ChromeOptions();
-            options.addArguments("--headless");
-            driver = new ChromeDriver(options);
-        }
-        else{
+        ChromeOptions options=getChromeOptions();
+
+        if(options==null){
             driver=new ChromeDriver();
         }
+        else{
+            driver=new ChromeDriver(options);
+        }
     }
 
-    private void setupVPN(ERegion region){
-        //Todo
+    private ChromeOptions getChromeOptions(){
+        ChromeOptions options=new ChromeOptions();
+        boolean optionsIsFilled=false;
+
+        //Set whether driver is headless
+        if(Configuration.WEBDRIVER_IS_HEADLESS){
+            options.addArguments("--headless");
+            optionsIsFilled=true;
+        }
+
+        //Set VPN
+        if(Configuration.PROXY_IS_USED){
+            options.addArguments("--proxy-server=" + Configuration.PROXY);
+            optionsIsFilled=true;
+        }
+
+        if(optionsIsFilled)
+            return options;
+        else
+            return null;
     }
 
-    private void analyzeWebsite(Website website,ERegion region){
-        Request request=new Request(region);
+    private void analyzeWebsite(Website website){
+        Request request=new Request(Configuration.REGION_TO_ANALYZE);
 
         for (AnalysisStep step : steps) {
             step.execute(driver, request);
