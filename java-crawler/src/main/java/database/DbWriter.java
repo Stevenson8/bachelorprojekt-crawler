@@ -41,7 +41,11 @@ public class DbWriter {
                 int requestId=dbHelper.selectIdFromRequestWhere(status,originRegion,ipUsed,date,wasDirected,redirectedPage,protocol,websiteId);
 
                 for(Cookie cookie:request.getCookies()){
-                    dbHelper.insertIntoCookie("ga_12345","hvoeurbgoesbg","2019-01-09",requestId);
+                    String cookieName=cookie.getName();
+                    String cookieValue= cookie.getValue();
+                    String expiryDate=cookie.getExpiryDate();
+
+                    dbHelper.insertIntoCookie(cookieName,cookieValue,expiryDate,requestId);
                 }
             }
         }

@@ -5,7 +5,7 @@ import configuration.Configuration;
 import csvreader.DomainCsvReader;
 import database.DbWriter;
 import model.*;
-import org.openqa.selenium.By;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -31,7 +31,7 @@ public class Controller {
 
         this.steps=new ArrayList<AnalysisStep>();
         steps.add(new CookieCleaner());
-        steps.add(new WebsiteRedirector());
+        steps.add(new WebsiteCaller());
         steps.add(new InternetProtocolAnalyzer());
         steps.add(new CookieReader());
     }
@@ -83,7 +83,11 @@ public class Controller {
 
         //Set VPN
         if(Configuration.PROXY_IS_USED){
-            options.addArguments("--proxy-server=" + Configuration.PROXY);
+            Proxy p=new Proxy();
+            p.setHttpProxy(Configuration.PROXY);
+            options.setCapability("proxy",p);
+
+            //options.addArguments("--proxy-server=" + Configuration.PROXY);
             optionsIsFilled=true;
             System.out.println("Set Proxy!");
         }
@@ -98,10 +102,11 @@ public class Controller {
         Request request=new Request(Configuration.REGION_TO_ANALYZE);
 
         for (AnalysisStep step : steps) {
-            step.execute(driver, request);
+            step.execute(driver, website, request);
         }
 
         analysisResult.addRequest(website,request);
+        System.out.println("added website "+website.getUrl()+" with request: cookies size: "+request.getCookies().size());
     }
 
     private void writeResultToDatabase(){

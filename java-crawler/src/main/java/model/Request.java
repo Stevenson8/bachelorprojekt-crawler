@@ -25,4 +25,8 @@ public class Request {
     public List<Cookie> getCookies() {
         return cookies;
     }
+
+    public void addCookie(Cookie cookie){
+        cookies.add(cookie);
+    }
 }
