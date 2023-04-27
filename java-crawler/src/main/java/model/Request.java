@@ -11,8 +11,9 @@ public class Request {
     private ERequestStatus requestStatus;
     private List<Cookie> cookies;
     private boolean wasRedirected;
-    private Optional<String> redirectedPage;
+    private String redirectedPage;
     private EInternetProtocol protocol;
+    private String date;
 
     public Request(ERegion originRegion) {
         this.originRegion=originRegion;
@@ -28,5 +29,45 @@ public class Request {
 
     public void addCookie(Cookie cookie){
         cookies.add(cookie);
+    }
+
+    public void setProtocol(EInternetProtocol protocol) {
+        this.protocol = protocol;
+    }
+
+    public void setRequestStatus(ERequestStatus requestStatus) {
+        this.requestStatus = requestStatus;
+    }
+
+    public void setWasRedirected(boolean wasRedirected) {
+        this.wasRedirected = wasRedirected;
+    }
+
+    public void setRedirectedPage(String redirectedPage) {
+        this.redirectedPage = redirectedPage;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public ERequestStatus getRequestStatus() {
+        return requestStatus;
+    }
+
+    public boolean getWasRedirected() {
+        return wasRedirected;
+    }
+
+    public String getRedirectedPage() {
+        return redirectedPage;
+    }
+
+    public EInternetProtocol getProtocol() {
+        return protocol;
+    }
+
+    public String getDate() {
+        return date;
     }
 }

@@ -3,9 +3,13 @@ package analysis;
 import model.Cookie;
 import model.Request;
 import model.Website;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.main.Main;
 import org.openqa.selenium.WebDriver;
 
 public class CookieReader implements AnalysisStep{
+    private static final Logger logger = LogManager.getLogger(CookieReader.class);
     @Override
     public void execute(WebDriver driver, Website website, Request request) {
 
@@ -15,9 +19,13 @@ public class CookieReader implements AnalysisStep{
 
             newCookie.setName(cookie.getName());
             newCookie.setValue(cookie.getValue());
-            newCookie.setExpiryDate(convertDateFormat(cookie.getExpiry().toString()));
+            if(cookie.getExpiry()==null)
+                newCookie.setExpiryDate("");
+            else
+                newCookie.setExpiryDate(convertDateFormat(cookie.getExpiry().toString()));
 
             request.addCookie(newCookie);
+            logger.info(String.format("Added Cookie [name: %s, value: %s, date: %s]",newCookie.getName(),newCookie.getValue(),newCookie.getExpiryDate()));
         }
     }
 

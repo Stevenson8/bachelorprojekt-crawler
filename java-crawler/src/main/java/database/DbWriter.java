@@ -30,12 +30,12 @@ public class DbWriter {
             int websiteId= dbHelper.selectIdFromWebsiteWhere(website.getUrl());
 
             for(Request request : result.get(website)){
-                String status="status haha";
+                String status=request.getRequestStatus().toString();
                 String originRegion=request.getOriginRegion().toString();
-                String date="2022-01-02";
-                boolean wasDirected=false;
-                String redirectedPage="";
-                String protocol="HTTP";
+                String date=request.getDate();
+                boolean wasDirected=request.getWasRedirected();
+                String redirectedPage=request.getRedirectedPage();
+                String protocol=request.getProtocol().toString();
 
                 dbHelper.insertIntoRequest(status,originRegion,ipUsed,date,wasDirected,redirectedPage,protocol,websiteId);
                 int requestId=dbHelper.selectIdFromRequestWhere(status,originRegion,ipUsed,date,wasDirected,redirectedPage,protocol,websiteId);

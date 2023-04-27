@@ -5,6 +5,8 @@ import configuration.Configuration;
 import csvreader.DomainCsvReader;
 import database.DbWriter;
 import model.*;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -17,7 +19,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Controller {
-
+    private static final Logger logger = LogManager.getLogger(Controller.class);
     private AnalysisResult analysisResult;
     private WebDriver driver;
     private List<AnalysisStep> steps;
@@ -89,7 +91,6 @@ public class Controller {
 
             //options.addArguments("--proxy-server=" + Configuration.PROXY);
             optionsIsFilled=true;
-            System.out.println("Set Proxy!");
         }
 
         if(optionsIsFilled)
@@ -106,7 +107,6 @@ public class Controller {
         }
 
         analysisResult.addRequest(website,request);
-        System.out.println("added website "+website.getUrl()+" with request: cookies size: "+request.getCookies().size());
     }
 
     private void writeResultToDatabase(){
@@ -131,7 +131,7 @@ public class Controller {
                 result = sc.nextLine();
 
             } else {
-                System.out.println("Error fetching data");
+                logger.error("Error when fetching My IP address");
             }
 
             conn.disconnect();
