@@ -24,9 +24,9 @@ public class DatabaseHelper {
 
     }
 
-    public void insertIntoWebsite(String url, String country){
+    public void insertIntoWebsite(String url, int rank, String country){
         try {
-            String sql=String.format("insert into website (url,country) values (\"%s\",\"%s\")",url,country);
+            String sql=String.format("insert into website (url,country) values (\"%s\",%s,\"%s\")",url,rank,country);
             //String sql = String.format("insert into website values ('1,\"%s\"')", url);
             stmt.execute(sql);
         } catch (Exception e) {

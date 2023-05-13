@@ -1,0 +1,33 @@
+create table website(
+	id int auto_increment NOT NULL,
+    url varchar(100) NOT NULL, 
+	website_rank int,
+
+    country varchar(100),
+	primary key(id)
+);
+
+create table request(
+	id int auto_increment NOT NULL,
+    request_status varchar(20),
+    origin_region varchar(10),
+    ip_address_used varchar(30),
+    request_date varchar(15),
+    was_directed boolean,
+    redirected_page varchar(100),
+    protocol varchar(20),
+    website int NOT NULL,
+    primary key(id),
+    foreign key(website) references website(id)
+    
+);
+
+create table cookie(
+	id int auto_increment NOT NULL,
+    cookie_name varchar(2000),
+    cookie_value varchar(2000),
+    expiry_date varchar(15),
+    request int NOT NULL,
+    primary key(id),
+    foreign key(request) references request(id)
+);

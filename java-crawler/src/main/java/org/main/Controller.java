@@ -44,12 +44,17 @@ public class Controller {
 
         fetchMyIP();
 
+        logger.info("Setting csvReader");
         csvReader.initializeReader(Configuration.NUMBER_OF_WEBSITES);
         csvReader.setToBeginning();
 
         for (int i = 0; i < Configuration.NUMBER_OF_WEBSITES; i++) {
+            logger.info("Analyzing Website # "+(i+1));
             String url = csvReader.readNext();
+            logger.info("\tRead URL: "+url);
             Website website = new Website(url);
+            int websiteRank= csvReader.getCurrentIndex()+1;
+            website.setWebsiteRank(websiteRank);
             analyzeWebsite(website);
 
         }
@@ -60,6 +65,7 @@ public class Controller {
     }
 
     private void setupWebDriver(){
+        logger.info("Setting up Webdriver");
 
         System.setProperty("webdriver.chrome.driver", Configuration.WEBDRIVER_PATH);
 
@@ -71,6 +77,7 @@ public class Controller {
         else{
             driver=new ChromeDriver(options);
         }
+        logger.info("Done setting up Webdriver");
     }
 
     private ChromeOptions getChromeOptions(){
@@ -119,6 +126,7 @@ public class Controller {
     }
 
     private void fetchMyIP(){
+        logger.info("Fetching my ip adddress");
         String result="";
 
         try {
@@ -139,5 +147,6 @@ public class Controller {
             e.printStackTrace();
         }
         analysisResult.setUsedIP(result);
+        logger.info("Fetched ip adddress: "+result);
     }
 }

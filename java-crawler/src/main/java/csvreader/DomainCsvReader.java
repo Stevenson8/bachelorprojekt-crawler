@@ -26,6 +26,10 @@ public class DomainCsvReader {
         index=0;
     }
 
+    public int getCurrentIndex(){
+        return index;
+    }
+
     public String readNext(){
         if (index>=values.size()){}
             //Todo log here

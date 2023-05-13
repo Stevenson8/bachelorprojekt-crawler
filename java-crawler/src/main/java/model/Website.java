@@ -8,6 +8,7 @@ public class Website {
         this.url = url;
     }
     private String url;
+    private int websiteRank;
     private String country;
 
     public String getUrl() {
@@ -20,6 +21,14 @@ public class Website {
         if (o == null || getClass() != o.getClass()) return false;
         Website website = (Website) o;
         return Objects.equals(url, website.url);
+    }
+
+    public void setWebsiteRank(int websiteRank) {
+        this.websiteRank = websiteRank;
+    }
+
+    public int getWebsiteRank() {
+        return websiteRank;
     }
 
 }

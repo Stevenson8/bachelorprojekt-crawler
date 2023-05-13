@@ -1,0 +1,3 @@
+drop table cookie;
+drop table request;
+drop table website;

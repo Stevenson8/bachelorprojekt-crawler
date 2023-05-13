@@ -26,7 +26,7 @@ public class DbWriter {
 
         for(Website website : result.keySet()){
             if(!websitesAlreadyCreated.contains(website.getUrl()))
-                dbHelper.insertIntoWebsite(website.getUrl(),"");
+                dbHelper.insertIntoWebsite(website.getUrl(),website.getWebsiteRank(),"");
             int websiteId= dbHelper.selectIdFromWebsiteWhere(website.getUrl());
 
             for(Request request : result.get(website)){
