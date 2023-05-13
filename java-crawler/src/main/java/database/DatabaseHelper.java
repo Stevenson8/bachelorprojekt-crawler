@@ -26,8 +26,8 @@ public class DatabaseHelper {
 
     public void insertIntoWebsite(String url, int rank, String country){
         try {
-            String sql=String.format("insert into website (url,country) values (\"%s\",%s,\"%s\")",url,rank,country);
-            //String sql = String.format("insert into website values ('1,\"%s\"')", url);
+            String sql=String.format("insert into website (url,website_rank,country) values (\"%s\",%s,\"%s\")",url,rank,country);
+            System.out.println(sql);
             stmt.execute(sql);
         } catch (Exception e) {
             System.err.println("Error at: insertIntoWebsite\nmessage: " + e.getMessage());

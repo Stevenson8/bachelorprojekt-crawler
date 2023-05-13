@@ -66,7 +66,6 @@ public class Controller {
 
     private void setupWebDriver(){
         logger.info("Setting up Webdriver");
-
         System.setProperty("webdriver.chrome.driver", Configuration.WEBDRIVER_PATH);
 
         ChromeOptions options=getChromeOptions();

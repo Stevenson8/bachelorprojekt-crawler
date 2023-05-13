@@ -10,7 +10,7 @@ public class Configuration {
     public final static String DOMAIN_CSV_PATH= ("csv_files\\tranco_list_top-1k_20230424.csv");
     public final static String MY_IP_API="https://api.ipify.org/?";
 
-    public final static int NUMBER_OF_WEBSITES=10;
+    public final static int NUMBER_OF_WEBSITES=3;
     public final static boolean WEBDRIVER_IS_HEADLESS =false;
     public final static ERegion REGION_TO_ANALYZE= ERegion.EU;
     public final static boolean PROXY_IS_USED=false;
