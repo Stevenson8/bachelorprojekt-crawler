@@ -45,15 +45,16 @@ public class Controller {
         fetchMyIP();
 
         logger.info("Setting csvReader");
-        csvReader.initializeReader(Configuration.NUMBER_OF_WEBSITES);
+        csvReader.initializeReader();
         csvReader.setToBeginning();
 
-        for (int i = 0; i < Configuration.NUMBER_OF_WEBSITES; i++) {
+        int numberOfWebsitesToAnaylze=Configuration.WEBSITE_RANK_END-Configuration.WEBSITE_RANK_START+1;
+        for (int i = 0; i < numberOfWebsitesToAnaylze; i++) {
             logger.info("Analyzing Website # "+(i+1));
+            int websiteRank= csvReader.getCurrentIndex()+1;
             String url = csvReader.readNext();
             logger.info("\tRead URL: "+url);
             Website website = new Website(url);
-            int websiteRank= csvReader.getCurrentIndex()+1;
             website.setWebsiteRank(websiteRank);
             analyzeWebsite(website);
 

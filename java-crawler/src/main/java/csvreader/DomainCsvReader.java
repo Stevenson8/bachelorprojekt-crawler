@@ -36,9 +36,9 @@ public class DomainCsvReader {
         return values.get(index++);
     }
 
-    public void initializeReader(int websitesToRead){
+    public void initializeReader(){
         values.clear();
-        index=0;
+        index=Configuration.WEBSITE_RANK_START-1;
 
         Scanner sc = null;
         try {
@@ -49,7 +49,7 @@ public class DomainCsvReader {
 
         sc.useDelimiter("\n");   //sets the delimiter pattern
 
-        for(int i=0;i<Configuration.NUMBER_OF_WEBSITES;i++){
+        for(int i=index;i<Configuration.WEBSITE_RANK_END;i++){
             if (sc.hasNext())
                 values.add(sc.next().split(",")[1]);
         }
