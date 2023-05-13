@@ -42,7 +42,8 @@ public class Controller {
 
         setupWebDriver();
 
-        fetchMyIP();
+        if(Configuration.FETCH_IP_ADDRESS)
+            fetchMyIP();
 
         logger.info("Setting csvReader");
         csvReader.initializeReader();
@@ -126,7 +127,7 @@ public class Controller {
     }
 
     private void fetchMyIP(){
-        logger.info("Fetching my ip adddress");
+        logger.info("Fetching my ip address");
         String result="";
 
         try {

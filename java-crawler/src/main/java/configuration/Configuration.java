@@ -16,6 +16,7 @@ public class Configuration {
     public final static ERegion REGION_TO_ANALYZE= ERegion.EU;
     public final static boolean PROXY_IS_USED=false;
     public final static String PROXY="95.217.107.234:3128";
+    public final static boolean FETCH_IP_ADDRESS=false;
 
 
 }

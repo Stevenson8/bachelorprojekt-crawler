@@ -17,8 +17,8 @@ public class WebsiteCaller implements AnalysisStep{
     @Override
     public void execute(WebDriver driver, Website website, Request request) {
 
-        String httpsUrl="https://www."+website.getUrl()+"/";
-        String httpUrl="http://www."+website.getUrl()+"/";
+        String httpsUrl="https://www."+website.getUrl().replaceAll("\\s","")+"/";
+        String httpUrl="http://www."+website.getUrl().replaceAll("\\s","")+"/";
         String finallyUsedUrl="";
 
         boolean requestWasSuccessful=true;
@@ -55,7 +55,7 @@ public class WebsiteCaller implements AnalysisStep{
 
 
         //Set potential redirection
-        if(driver.getCurrentUrl()!=finallyUsedUrl){
+        if(!driver.getCurrentUrl().equals(finallyUsedUrl)){
             request.setWasRedirected(true);
             request.setRedirectedPage(driver.getCurrentUrl());
         }
@@ -63,9 +63,6 @@ public class WebsiteCaller implements AnalysisStep{
             request.setWasRedirected(false);
             request.setRedirectedPage("");
         }
-
-        logger.info(String.format("Called Website [%s -> %s]: {Status: %s, Date: %s}",finallyUsedUrl,request.getRedirectedPage(),request.getRequestStatus(),request.getDate()));
-
     }
 
     private String getDate(){
