@@ -2,16 +2,14 @@ package analysis;
 
 import model.Request;
 import model.Website;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.devtools.v113.network.Network;
 
-import java.util.Map;
 import java.util.Optional;
 
-public class HttpHeadCookieReader implements AnalysisStep{
+public class HttpHeaderCookieReader implements AnalysisStep{
     @Override
     public void execute(ChromeDriver driver, Website website, Request request) {
 
