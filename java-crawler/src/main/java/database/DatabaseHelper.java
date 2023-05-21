@@ -33,10 +33,10 @@ public class DatabaseHelper {
         }
     }
 
-    public void insertIntoRequest(String status, String region, String ipUsed, String date, boolean wasDirected, String redirectedPage, String protocol, int website){
+    public void insertIntoRequest(String status, String region, String ipUsed, String date, String originalUrl, boolean wasDirected, String redirectedUrl, String protocol, int website){
         try {
-            String sql = String.format("insert into request (request_status,origin_region,ip_address_used,request_date,was_directed,redirected_page,protocol,website) " +
-                    "values (\"%s\",\"%s\",\"%s\",\"%s\",%s,\"%s\",\"%s\",%s)", status,region,ipUsed,date,wasDirected,redirectedPage,protocol,website);
+            String sql = String.format("insert into request (request_status,origin_region,ip_address_used,request_date,original_url,was_directed,redirected_url,protocol,website) " +
+                    "values (\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",%s,\"%s\",\"%s\",%s)", status,region,ipUsed,date,originalUrl,wasDirected,redirectedUrl,protocol,website);
             stmt.execute(sql);
         } catch (Exception e) {
             System.err.println("Error at: insertIntoRequest\nmessage: " + e.getMessage());
@@ -83,11 +83,11 @@ public class DatabaseHelper {
         return id;
     }
 
-    int selectIdFromRequestWhere(String status,String originRegion,String ipUsed,String date,boolean wasDirected,String redirectedPage,String protocol,int websiteId) {
+    int selectIdFromRequestWhere(String status,String originRegion,String ipUsed,String date,String originalUrl,boolean wasDirected,String redirectedUrl,String protocol,int websiteId) {
         int id=0;
 
         try {
-            String query=String.format("select id from request where website=%s",websiteId);
+            String query=String.format("select id from request where website=%s and origin_region=\"%s\" and request_date=\"%s\"",websiteId,originRegion,date);
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 id=rs.getInt("id");

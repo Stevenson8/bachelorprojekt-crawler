@@ -14,7 +14,12 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 
     //Selenium Library for automating Web Browser
-    implementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
+    //implementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
+
+    // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.9.1'
+
+
 
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.33'

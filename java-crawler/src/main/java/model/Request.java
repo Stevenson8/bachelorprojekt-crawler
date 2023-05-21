@@ -1,17 +1,15 @@
 package model;
 
-import com.sun.jdi.PrimitiveValue;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class Request {
     private ERegion originRegion;
     private ERequestStatus requestStatus;
     private List<Cookie> cookies;
+    private String originalUrl;
     private boolean wasRedirected;
-    private String redirectedPage;
+    private String redirectedUrl;
     private EInternetProtocol protocol;
     private String date;
 
@@ -43,8 +41,11 @@ public class Request {
         this.wasRedirected = wasRedirected;
     }
 
-    public void setRedirectedPage(String redirectedPage) {
-        this.redirectedPage = redirectedPage;
+    public void setRedirectedUrl(String redirectedUrl) {
+        this.redirectedUrl = redirectedUrl;
+    }
+    public void setOriginalUrl(String originalUrl) {
+        this.originalUrl = originalUrl;
     }
 
     public void setDate(String date) {
@@ -55,12 +56,12 @@ public class Request {
         return requestStatus;
     }
 
-    public boolean getWasRedirected() {
+    public boolean wasRedirected() {
         return wasRedirected;
     }
 
-    public String getRedirectedPage() {
-        return redirectedPage;
+    public String getRedirectedUrl() {
+        return redirectedUrl;
     }
 
     public EInternetProtocol getProtocol() {
@@ -69,5 +70,8 @@ public class Request {
 
     public String getDate() {
         return date;
+    }
+    public String getOriginalUrl() {
+        return originalUrl;
     }
 }

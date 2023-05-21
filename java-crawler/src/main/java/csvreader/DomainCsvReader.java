@@ -30,10 +30,10 @@ public class DomainCsvReader {
         return index;
     }
 
-    public String readNext(){
+    public String readNextUrl(){
         if (index>=values.size()){}
             //Todo log here
-        return values.get(index++);
+        return "www."+values.get(index++);
     }
 
     public void initializeReader(){

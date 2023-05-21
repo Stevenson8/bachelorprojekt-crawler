@@ -5,18 +5,18 @@ import java.util.Objects;
 public class Website {
 
     public Website(String url) {
-        this.url = url;
+        this.baseUrl = url;
     }
-    private String url;
+    private String baseUrl;
     private int websiteRank;
     private String country;
 
-    public String getUrl() {
-        return url;
+    public String getBaseUrl() {
+        return baseUrl;
     }
 
-    public void setUrl(String url) {
-        this.url=url;
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class Website {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Website website = (Website) o;
-        return Objects.equals(url, website.url);
+        return Objects.equals(baseUrl, website.baseUrl);
     }
 
     public void setWebsiteRank(int websiteRank) {

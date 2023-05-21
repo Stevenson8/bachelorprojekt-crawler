@@ -5,13 +5,12 @@ import model.Request;
 import model.Website;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.main.Main;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 public class CookieReader implements AnalysisStep{
     private static final Logger logger = LogManager.getLogger(CookieReader.class);
     @Override
-    public void execute(WebDriver driver, Website website, Request request) {
+    public void execute(ChromeDriver driver, Website website, Request request) {
 
         for (org.openqa.selenium.Cookie cookie : driver.manage().getCookies()) {
 

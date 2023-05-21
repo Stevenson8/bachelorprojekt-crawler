@@ -1,73 +1,23 @@
 package analysis;
 
-import model.EInternetProtocol;
 import model.ERequestStatus;
 import model.Request;
 import model.Website;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.openqa.selenium.WebDriver;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Optional;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 public class WebsiteCaller implements AnalysisStep{
-    private static final Logger logger = LogManager.getLogger(WebsiteCaller.class);
     @Override
-    public void execute(WebDriver driver, Website website, Request request) {
+    public void execute(ChromeDriver driver, Website website, Request request) {
 
-        String httpsUrl="https://www."+website.getUrl().replaceAll("\\s","")+"/";
-        String httpUrl="http://www."+website.getUrl().replaceAll("\\s","")+"/";
-        String finallyUsedUrl="";
-
-        boolean requestWasSuccessful=true;
-
-        //Set time of the request
-        request.setDate(getDate());
-
-        //Try HTTPS and/or HTTP Connection
-        try {
-            driver.get(httpsUrl);
-            request.setProtocol(EInternetProtocol.HTTPS);
-            finallyUsedUrl=httpsUrl;
-        }
-        catch (Exception eHttps){
-            System.err.println("[!] Error https for: "+httpsUrl);
-            try {
-                driver.get(httpUrl);
-                request.setProtocol(EInternetProtocol.HTTP);
-                finallyUsedUrl=httpUrl;
-            }
-            catch (Exception eHttp){
-                System.err.println("[!] Error http for: "+httpUrl);
-                request.setProtocol(EInternetProtocol.NOTAPPLICABLE);
-                requestWasSuccessful=false;
-            }
-        }
-
-        //Set Request Status
-        if(!requestWasSuccessful){
-            request.setRequestStatus(ERequestStatus.ERRONEOUS);
+        if(request.getRequestStatus().equals(ERequestStatus.ERRONEOUS)){
             return;
         }
-        else request.setRequestStatus(ERequestStatus.OK);
 
-
-        //Set potential redirection
-        if(!driver.getCurrentUrl().equals(finallyUsedUrl)){
-            request.setWasRedirected(true);
-            request.setRedirectedPage(driver.getCurrentUrl());
+        if(request.wasRedirected()){
+            driver.get(request.getRedirectedUrl());
         }
-        else {
-            request.setWasRedirected(false);
-            request.setRedirectedPage("");
+        else{
+            driver.get(request.getOriginalUrl());
         }
-    }
-
-    private String getDate(){
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return sdf.format(date);
     }
 }

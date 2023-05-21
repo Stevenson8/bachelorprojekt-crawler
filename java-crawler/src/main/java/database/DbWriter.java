@@ -25,20 +25,21 @@ public class DbWriter {
 
 
         for(Website website : result.keySet()){
-            if(!websitesAlreadyCreated.contains(website.getUrl()))
-                dbHelper.insertIntoWebsite(website.getUrl(),website.getWebsiteRank(),"");
-            int websiteId= dbHelper.selectIdFromWebsiteWhere(website.getUrl());
+            if(!websitesAlreadyCreated.contains(website.getBaseUrl()))
+                dbHelper.insertIntoWebsite(website.getBaseUrl(),website.getWebsiteRank(),"");
+            int websiteId= dbHelper.selectIdFromWebsiteWhere(website.getBaseUrl());
 
             for(Request request : result.get(website)){
                 String status=request.getRequestStatus().toString();
                 String originRegion=request.getOriginRegion().toString();
                 String date=request.getDate();
-                boolean wasDirected=request.getWasRedirected();
-                String redirectedPage=request.getRedirectedPage();
+                String originalUrl=request.getOriginalUrl();
+                boolean wasDirected=request.wasRedirected();
+                String redirectedUrl=request.getRedirectedUrl();
                 String protocol=request.getProtocol().toString();
 
-                dbHelper.insertIntoRequest(status,originRegion,ipUsed,date,wasDirected,redirectedPage,protocol,websiteId);
-                int requestId=dbHelper.selectIdFromRequestWhere(status,originRegion,ipUsed,date,wasDirected,redirectedPage,protocol,websiteId);
+                dbHelper.insertIntoRequest(status,originRegion,ipUsed,date,originalUrl,wasDirected,redirectedUrl,protocol,websiteId);
+                int requestId=dbHelper.selectIdFromRequestWhere(status,originRegion,ipUsed,date,originalUrl,wasDirected,redirectedUrl,protocol,websiteId);
 
                 for(Cookie cookie:request.getCookies()){
                     String cookieName=cookie.getName();
