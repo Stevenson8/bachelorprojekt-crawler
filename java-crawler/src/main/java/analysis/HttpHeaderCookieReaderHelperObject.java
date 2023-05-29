@@ -58,7 +58,6 @@ public class HttpHeaderCookieReaderHelperObject {
     }
 
     public String getResultCookieHeader(){
-
         double earliestRequestTime=Double.MAX_VALUE;
         String earliestRequestId="";
 
@@ -79,7 +78,7 @@ public class HttpHeaderCookieReaderHelperObject {
         System.out.println("\t\t\t\t~~~~~Earliest RequestId~~~~~"+earliestRequestId);
         System.out.println("\t\t\t\t\t\t~~~~~Headers~~~~~"+cookieHeaderMap.get(earliestRequestId));
 
-        return cookieHeaderMap.get(earliestRequestTime);
+        return cookieHeaderMap.get(earliestRequestId);
     }
 
 
