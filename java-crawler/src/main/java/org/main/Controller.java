@@ -35,8 +35,8 @@ public class Controller {
         steps.add(new WebsiteCaller());
         steps.add(new WebsiteCloser());
         steps.add(new WebsiteCaller());
-        steps.add(new CookieReader());
-        //steps.add(new HttpHeadCookieReader());
+        steps.add(new HttpHeaderCookieReader());
+
     }
 
     public void doAnalysis(){
@@ -46,18 +46,16 @@ public class Controller {
 
         logger.info("Setting csvReader");
         csvReader.initializeReader();
-        csvReader.setToBeginning();
 
         int numberOfWebsitesToAnaylze=Configuration.WEBSITE_RANK_END-Configuration.WEBSITE_RANK_START+1;
-        for (int i = 0; i < numberOfWebsitesToAnaylze; i++) {
-            logger.info("Analyzing Website # "+(i+1));
-            int websiteRank= csvReader.getCurrentIndex()+1;
+        while (csvReader.hasNextUrl()) {
+            int websiteRank= csvReader.getCurrentRank();
+            logger.info("**********Analyzing Website Rank # "+websiteRank+"**********");
             String url = csvReader.readNextUrl();
             logger.info("\tRead URL: "+url);
             Website website = new Website(url);
             website.setWebsiteRank(websiteRank);
             analyzeWebsite(website);
-
         }
         DriverManager.closeChromeDriver();
         dbWriter.writeResultToDatabase(analysisResult);

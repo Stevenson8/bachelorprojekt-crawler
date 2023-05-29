@@ -7,6 +7,7 @@ import model.Website;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.remote.UnreachableBrowserException;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,14 +38,14 @@ public class WebsiteUrlIdentifier implements AnalysisStep{
             finallyUsedUrl=httpsUrl;
         }
         catch (Exception eHttps){
-            System.err.println("[!] Error https for: "+httpsUrl);
+            logger.info("\tHTTPS Error for: "+httpsUrl);
             try {
                 driver.get(httpUrl);
                 request.setProtocol(EInternetProtocol.HTTP);
                 finallyUsedUrl=httpUrl;
             }
             catch (Exception eHttp){
-                System.err.println("[!] Error http for: "+httpUrl);
+                logger.info("\tHTTP Error for: "+httpsUrl);
                 request.setProtocol(EInternetProtocol.NOTAPPLICABLE);
                 requestWasSuccessful=false;
             }

@@ -38,38 +38,21 @@ public class DriverManager {
         ChromeDriver newDriver;
         ChromeOptions options = getChromeOptions();
 
-        if (options == null) {
-            newDriver = new ChromeDriver();
-        } else {
-            newDriver = new ChromeDriver(options);
-        }
+        newDriver = new ChromeDriver(options);
+
         return newDriver;
     }
 
     private static ChromeOptions getChromeOptions(){
         ChromeOptions options=new ChromeOptions();
-        boolean optionsIsFilled=false;
+
+        options.addArguments("--log-level=3");
 
         //Set whether driver is headless
-        if(Configuration.WEBDRIVER_IS_HEADLESS){
+        if(Configuration.WEBDRIVER_IS_HEADLESS)
             options.addArguments("--headless");
-            optionsIsFilled=true;
-        }
 
-        //Set VPN
-        if(Configuration.PROXY_IS_USED){
-            Proxy p=new Proxy();
-            p.setHttpProxy(Configuration.PROXY);
-            options.setCapability("proxy",p);
-
-            //options.addArguments("--proxy-server=" + Configuration.PROXY);
-            optionsIsFilled=true;
-        }
-
-        if(optionsIsFilled)
-            return options;
-        else
-            return null;
+        return options;
     }
 
 }

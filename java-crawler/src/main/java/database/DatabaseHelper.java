@@ -43,10 +43,10 @@ public class DatabaseHelper {
         }
     }
 
-    public void insertIntoCookie(String name, String value, String expiryDate, int request){
+    public void insertIntoCookie(String name, String value, int request){
         try {
-            String sql = String.format("insert into cookie (cookie_name,cookie_value,expiry_date,request) " +
-                    "values (\"%s\",\"%s\",\"%s\",%s)", name, value, expiryDate, request);
+            String sql = String.format("insert into cookie (cookie_name,cookie_value,request) " +
+                    "values (\"%s\",\"%s\",%s)", name, value, request);
             stmt.execute(sql);
         } catch (Exception e) {
             System.err.println("Error at: insertIntoCookie\nmessage: " + e.getMessage());

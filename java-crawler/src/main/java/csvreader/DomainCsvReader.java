@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.io.*;
+import java.util.concurrent.ExecutionException;
 
 public class DomainCsvReader {
 
@@ -18,27 +19,24 @@ public class DomainCsvReader {
         index=0;
     }
 
-    public boolean hasNext(){
+    public boolean hasNextUrl(){
         return index<values.size();
     }
 
-    public void setToBeginning(){
-        index=0;
-    }
-
-    public int getCurrentIndex(){
-        return index;
+    public int getCurrentRank(){
+        return index+Configuration.WEBSITE_RANK_START;
     }
 
     public String readNextUrl(){
-        if (index>=values.size()){}
-            //Todo log here
+        if (index>=values.size()){
+        return "xyz";
+        }
+
         return "www."+values.get(index++);
     }
 
     public void initializeReader(){
         values.clear();
-        index=Configuration.WEBSITE_RANK_START-1;
 
         Scanner sc = null;
         try {
@@ -49,9 +47,14 @@ public class DomainCsvReader {
 
         sc.useDelimiter("\n");   //sets the delimiter pattern
 
-        for(int i=index;i<Configuration.WEBSITE_RANK_END;i++){
-            if (sc.hasNext())
-                values.add(sc.next().split(",")[1]);
+
+        for(int i=0;i<Configuration.WEBSITE_RANK_END;i++){
+            if (sc.hasNext()) {
+                if(i>=Configuration.WEBSITE_RANK_START-1)
+                    values.add(sc.next().split(",")[1]);
+                else
+                    sc.next();
+            }
         }
 
         sc.close();  //closes the scanner

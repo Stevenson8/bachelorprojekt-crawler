@@ -44,9 +44,8 @@ public class DbWriter {
                 for(Cookie cookie:request.getCookies()){
                     String cookieName=cookie.getName();
                     String cookieValue= cookie.getValue();
-                    String expiryDate=cookie.getExpiryDate();
 
-                    dbHelper.insertIntoCookie(cookieName,cookieValue,expiryDate,requestId);
+                    dbHelper.insertIntoCookie(cookieName,cookieValue,requestId);
                 }
             }
         }
