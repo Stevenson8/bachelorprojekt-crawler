@@ -7,106 +7,58 @@ import java.util.regex.Pattern;
 public class HttpHeaderCookieReaderHelperObject {
     private boolean active;
 
-    private String baseUrl;
-    private String path;
-    private boolean requestIdIsSet;
 
-    private Set<String> alreadyCheckedIds;
+    private boolean requestIdSet;
 
+    private String requestId;
+    private Map<String,String> headers;
 
-    private Map<String,Double> requestTimestampMap;
-    private Map<String, String> requestHeadersMap;
-    private Number currentEarliestTime;
 
     public HttpHeaderCookieReaderHelperObject(String requestUrl) {
-
-        baseUrl=retrieveBaseUrl(requestUrl);
-
-        active=true;
-        requestIdIsSet=false;
-        currentEarliestTime=Double.MAX_VALUE;
-        requestHeadersMap =new HashMap<>();
-        requestTimestampMap=new HashMap<>();
-        alreadyCheckedIds=new HashSet<>();
+        requestIdSet=false;
+        requestId=null;
+        headers=new HashMap<>();
     }
 
-    public boolean isActive() {
-        return active;
+    public boolean requestIdIsSet() {
+        return requestIdSet;
     }
 
-    public void setDone() {
-        active=false;
+    public void setRequestId(String requestId){
+        System.out.println("aaaaaaaaaSet Request ID: {"+requestId+"}");
+        this.requestId=requestId;
+        requestIdSet=true;
     }
 
-    public void setRequestTimestamp(String requestId,String timestamp){
-
-        if(timestamp==""||timestamp==null)
-            return;
-
-        double number=Double.parseDouble(timestamp);
-
-        requestTimestampMap.put(requestId,number);
-
+    public void setHeader(String requestId, String header){
+        System.out.println("zzzzzzzzzSet Header with ID"+requestId+": {"+header+"}");
+        headers.put(requestId,header);
     }
 
-    public boolean requestIdIsSet(){
-        return requestIdIsSet;
-    }
 
-    public void putHeader(String requestId,String header){
-        requestHeadersMap.put(requestId,header);
-        System.out.println("!!!!!!!!!!Put in Map: ID: "+requestId+"; Header: "+header);
-    }
 
     public String getResultCookieHeader(){
-
-        //Get request Id
-        String requestId=getNextChronologicalRequestId();
-
-        while(requestId!=null){
-            //Get Headers
-            String headers= requestHeadersMap.get(requestId);
-            System.out.println("!!!!!!!!!!Fetched Headers from Map ("+requestId+"): "+headers);
-
-            if(headers!=null) {
-                String authorityValue=retrieveHeaderValue(headers, ":authority");
-                if(authorityValue!=null){
-                    if (authorityValue.equals(baseUrl)) {
-                        String cookieHeader = retrieveHeaderValue(headers, "cookie");
-                        if (cookieHeader == null) {
-                            cookieHeader = retrieveHeaderValue(headers, "Cookie");
-                        }
-                        return cookieHeader;
-                    }
-                }
-            }
-            requestId = getNextChronologicalRequestId();
-        }
-
-        return null;
-    }
+        System.out.println("cccccccccGet Result Cookie Header:");
 
 
-    public void setNewEarliestTime(Number time){
-        this.currentEarliestTime=time;
-    }
-
-    public boolean timeIsEarlier(Number newTime){
-        double timeOld = currentEarliestTime.doubleValue();
-        double timeNew = newTime.doubleValue();
-        return timeNew < timeOld;
-    }
-
-    private String retrieveBaseUrl(String requestUrl){
-        Pattern pattern = Pattern.compile("(?:www\\.|//)([^/]+)");
-        Matcher matcher = pattern.matcher(requestUrl);
-
-        if (matcher.find()) {
-            return matcher.group(1);
-        } else {
+        String header=headers.get(requestId);
+        System.out.println("\t\t\t\tFetched from Map: "+header);
+        if(header==null)
             return null;
+
+        String cookieHeader=null;
+        cookieHeader=retrieveHeaderValue(header,"cookie");
+        System.out.println("\t\t\t\tRetrieved with c!ookie: "+cookieHeader);
+        if(cookieHeader==null) {
+            cookieHeader = retrieveHeaderValue(header, "Cookie");
+            System.out.println("\t\t\t\tRetrieved with C!ookie: " + cookieHeader);
         }
+
+        return cookieHeader;
     }
+
+
+
 
     private String retrieveHeaderValue(String headersString, String headerName){
 
@@ -127,29 +79,8 @@ public class HttpHeaderCookieReaderHelperObject {
         return null;
     }
 
-    private String getNextChronologicalRequestId(){
-        double earliestRequestTime=Double.MAX_VALUE;
-        String earliestRequestId="";
 
-        for(String requestId: requestTimestampMap.keySet()){
-            if(!alreadyCheckedIds.contains(requestId)) {
-                double newTimestamp = requestTimestampMap.get(requestId);
-                if (newTimestamp < earliestRequestTime) {
-                    earliestRequestTime = newTimestamp;
-                    earliestRequestId = requestId;
-                    alreadyCheckedIds.add(requestId);
-                }
-            }
-        }
 
-        if(earliestRequestTime==Double.MAX_VALUE)
-            return null;
 
-        return earliestRequestId;
-    }
-
-    private String retrievePath(String requestUrl){
-        return "";
-    }
 
 }
