@@ -35,7 +35,7 @@ public class HttpHeaderCookieReader implements AnalysisStep{
         else
             requestUrl=request.getOriginalUrl();
 
-        HttpHeaderCookieReaderHelperObject helper=new HttpHeaderCookieReaderHelperObject();
+        HttpHeaderCookieReaderHelperObject helper=new HttpHeaderCookieReaderHelperObject(requestUrl);
 
         // Enable DevTools
         DevTools devTools = driver.getDevTools();
@@ -46,9 +46,12 @@ public class HttpHeaderCookieReader implements AnalysisStep{
 
         devTools.addListener(Network.requestWillBeSent(), fetchResult -> {
 
-            //Todo remove
-            System.out.println("\t\t\t**********"+fetchResult.getRequestId());
-            System.out.println("\t\t\t\t**********[TimeStamp for "+fetchResult.getRequestId().toString()+"]: "+fetchResult.getTimestamp());
+            System.out.println("\t\t......ID: "+fetchResult.getRequestId()+"..........."+fetchResult.getRequest().getUrl());
+            synchronized (System.out) {
+                //todo rem
+                System.out.println("\t\t********ID**"+fetchResult.getRequestId());
+                System.out.println("\t\t\t\t**********[Timestamp]: "+fetchResult.getTimestamp());
+            }
 
             String requestId=fetchResult.getRequestId().toString();
             if(requestId.equals(""))
@@ -61,28 +64,21 @@ public class HttpHeaderCookieReader implements AnalysisStep{
 
         devTools.addListener(Network.requestWillBeSentExtraInfo(), fetchResult -> {
 
+            synchronized (System.out) {
+                //todo rem
+                System.out.println("\t\t------ID--"+fetchResult.getRequestId());
+                System.out.println("\t\t\t\t---------[Headers]: "+fetchResult.getHeaders());
+            }
+
+
             String requestId=fetchResult.getRequestId().toString();
 
-            String headers=null;
-            if(fetchResult.getHeaders().get("cookie")!=null){
-                headers=fetchResult.getHeaders().get("cookie").toString();
-            }
-            else if(fetchResult.getHeaders().get("Cookie")!=null){
-                headers=fetchResult.getHeaders().get("Cookie").toString();
-            }
+            String headers=fetchResult.getHeaders().toString();
 
-            if(headers!=null){
+            if(headers.length()>2){
                 helper.putHeader(requestId,headers);
             }
 
-            //Todo remove
-            System.out.println("\t\t\t--------"+fetchResult.getRequestId());
-            for(var key: fetchResult.getHeaders().keySet()){
-                System.out.println("\t\t\t\t--------Header:" + key);
-            }
-            for(var cookieHolder: fetchResult.getAssociatedCookies()){
-                System.out.println("\t\t\t\t\t--------Cookie:" + cookieHolder.getCookie().getName());
-            }
 
             /*
                 Number requestTime=fetchResult.getConnectTiming().getRequestTime();
@@ -137,7 +133,7 @@ public class HttpHeaderCookieReader implements AnalysisStep{
         }
 
         try {
-            Thread.sleep(10000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -146,6 +142,7 @@ public class HttpHeaderCookieReader implements AnalysisStep{
         devTools.clearListeners();
 
         String cookieHeader=helper.getResultCookieHeader();
+        System.out.println("\t\t\t\t!!!!!!!!!Resulst Cookie Header"+cookieHeader);
         if(cookieHeader!=null)
             writeCookieToRequest(request,cookieHeader);
     }
@@ -220,7 +217,6 @@ public class HttpHeaderCookieReader implements AnalysisStep{
         if(trimmedUrl1.equals("")||trimmedUrl2.equals(""))
             return false;
 
-        System.out.println("Comparing: "+trimmedUrl1+"; and "+trimmedUrl2+";");
         return trimmedUrl1.equals(trimmedUrl2);
     }
 }
