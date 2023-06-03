@@ -17,7 +17,17 @@ dependencies {
     //implementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
 
     // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
-    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.9.1'
+    //implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.9.1'
+
+    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.141.59'
+
+
+
+    // https://mvnrepository.com/artifact/net.lightbody.bmp/browsermob-core
+    implementation group: 'net.lightbody.bmp', name: 'browsermob-core', version: '2.1.5'
+
+    // https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager
+    implementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '4.2.0'
 
 
     // https://mvnrepository.com/artifact/mysql/mysql-connector-java

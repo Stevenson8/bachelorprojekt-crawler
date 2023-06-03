@@ -23,16 +23,16 @@ public class DomainCsvReader {
         return index<values.size();
     }
 
-    public int getCurrentRank(){
-        return index+Configuration.WEBSITE_RANK_START;
-    }
-
     public String readNextUrl(){
         if (index>=values.size()){
         return "xyz";
         }
 
         return "www."+values.get(index++);
+    }
+
+    public int getCurrentRank(){
+        return index+Configuration.WEBSITE_RANK_START;
     }
 
     public void initializeReader(){

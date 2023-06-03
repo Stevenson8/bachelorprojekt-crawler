@@ -4,20 +4,17 @@ import model.Cookie;
 import model.ERequestStatus;
 import model.Request;
 import model.Website;
+
+import net.lightbody.bmp.core.har.Har;
+import net.lightbody.bmp.core.har.HarEntry;
+import net.lightbody.bmp.core.har.HarNameValuePair;
+
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.main.Controller;
-import org.openqa.selenium.devtools.DevTools;
+import org.main.DriverManager;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.devtools.v113.network.Network;
-import org.openqa.selenium.devtools.v113.network.model.Headers;
 
-
-
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,96 +32,57 @@ public class HttpHeaderCookieReader implements AnalysisStep{
         else
             requestUrl=request.getOriginalUrl();
 
-        HttpHeaderCookieReaderHelperObject helper=new HttpHeaderCookieReaderHelperObject(requestUrl);
+        //Start listening to network
+        DriverManager.startListeningToNetwork();
 
-        // Enable DevTools
-        DevTools devTools = driver.getDevTools();
-        devTools.createSession();
-        devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty()));
-
-
-        devTools.addListener(Network.requestWillBeSentExtraInfo(), fetchResult -> {
-            synchronized (this) {
-                System.out.println("xxxxxxxxxExtra Info: ID {" + fetchResult.getRequestId() + "}");
-                System.out.println("\t\tHeaders: {" + fetchResult.getHeaders().toString() + "}");
-
-
-                helper.setHeader(fetchResult.getRequestId().toString(),fetchResult.getHeaders().toString());
-
-            }
-
-
-
-
-
-
-
-        });
-
-        devTools.addListener(Network.requestWillBeSent(), fetchResult -> {
-
-            synchronized (this) {
-                System.out.println("yyyyyyyyyNormal: ID {" + fetchResult.getRequestId() + "}");
-                System.out.println("\t\tDocument Url: {" + fetchResult.getDocumentURL());
-                System.out.println("\t\tRequest Url: {" + fetchResult.getRequest().getUrl());
-                System.out.println("\t\tMy URL: {" + requestUrl+"}");
-                System.out.println("\t\tMatches?:"+fetchResult.getRequest().getUrl().equals(requestUrl));
-                System.out.println("\t\tUrl Fragment: {" + fetchResult.getRequest().getUrlFragment());
-
-                if (fetchResult.getRequest().getUrl().equals(requestUrl)) {
-                    helper.setRequestId(fetchResult.getRequestId().toString());
-                }
-            }
-
-        });
-
-
-
-
-
+        //Fetch website
         driver.get(requestUrl);
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        //End listening to network
+        Har har=DriverManager.endListeningToNetworkAndGetHar();
+
+        for(var x:har.getLog().getPages()){
+            System.out.println("\t\t\t~~~~~~~Pages~~~~"+x.getTitle());
         }
 
-        //Tidy up
-        devTools.clearListeners();
+        String cookieHeader=null;
+        for(HarEntry entry:har.getLog().getEntries()){
+            System.out.println("\t\t\t********Entries Url~~~~"+entry.getRequest().getUrl());
+            System.out.println("\t\t\t\t********Entries Headers~~~~"+entry.getRequest().getHeaders().toString());
+            if(entry.getRequest().getUrl().equals(requestUrl)) {
+                List<HarNameValuePair> headerPairs=entry.getRequest().getHeaders();
 
-        String cookieHeader=helper.getResultCookieHeader();
-        System.out.println("dddddddddgetResult Cookie Header: "+cookieHeader);
-
-        if(cookieHeader!=null)
-            writeCookieToRequest(request,cookieHeader);
-    }
-
-    private void writeCookieToRequest(Request request,String cookieHeader){
-
-        System.out.println("!!!!!! Cookie String arrived: "+cookieHeader);
-        Map<String,String> cookies=getMapOfCookies(cookieHeader);
-
-        for(String key :cookies.keySet()) {
-            Cookie cookie =new Cookie();
-            cookie.setName(key);
-            cookie.setValue(cookies.get(key));
-            request.addCookie(cookie);
-            logger.info("\tAdded Cookie: "+cookie.getName()+" {"+cookie.getValue()+"}");
+                for(HarNameValuePair pair:headerPairs){
+                    if(pair.getName().equals("Cookie")){
+                        cookieHeader =pair.getValue();
+                    }
+                }
+            }
         }
+
+        if(cookieHeader==null)
+            return;
+
+        System.out.println("!!!!!Result Cookie Header: "+cookieHeader);
+
+
+        Map<String, String> cookieMap=getMapOfCookies(cookieHeader);
+
+        writeCookiesFromMapToRequest(cookieMap,request);
+
     }
 
     //Example of format of the headers.get("cookie"):
     //AEC=AUEFqZed4aHcneMBC6TcUAtqUH4-nLQclqayR846Rse50cS5uE_duHa_xw; __Secure-ENID=12.SE=C7GS;
-    private Map<String, String> getMapOfCookies(String cookieString){
+    private Map<String, String> getMapOfCookies(String cookieHeaderString){
 
         Map<String, String> result = new HashMap<>();
-        if(cookieString.equals(""))
+        if(cookieHeaderString.equals(""))
             return result;
 
 
         // Split the string into individual key-value pairs
-        String[] pairs = cookieString.split(";");
+        String[] pairs = cookieHeaderString.split(";");
 
         // Iterate over each key-value pair and split them into key and value
         for (String pair : pairs) {
@@ -138,6 +96,19 @@ public class HttpHeaderCookieReader implements AnalysisStep{
         }
 
         return result;
+    }
+
+    private void writeCookiesFromMapToRequest(Map<String, String> cookieMap, Request request){
+
+        for(String key:cookieMap.keySet()){
+            String value=cookieMap.get(key);
+
+            Cookie cookie=new Cookie();
+            cookie.setName(key);
+            cookie.setValue(value);
+
+            request.addCookie(cookie);
+        }
     }
 
     /**

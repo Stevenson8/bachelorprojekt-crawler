@@ -27,13 +27,6 @@ public class AnalysisResult {
         return analysisResult;
     }
 
-    public boolean alreadyContainsRequestForWebsite(Website website){
-        return analysisResult.keySet().contains(website);
-    }
-    public List<Request> getRequests(Website website){
-        return analysisResult.get(website);
-    }
-
     public void setUsedIP(String usedIP) {
         this.usedIP = usedIP;
     }

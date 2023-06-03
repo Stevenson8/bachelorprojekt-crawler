@@ -9,22 +9,9 @@ public class Website {
     }
     private String baseUrl;
     private int websiteRank;
-    private String country;
 
     public String getBaseUrl() {
         return baseUrl;
-    }
-
-    public void setBaseUrl(String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Website website = (Website) o;
-        return Objects.equals(baseUrl, website.baseUrl);
     }
 
     public void setWebsiteRank(int websiteRank) {
@@ -33,6 +20,14 @@ public class Website {
 
     public int getWebsiteRank() {
         return websiteRank;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Website website = (Website) o;
+        return Objects.equals(baseUrl, website.baseUrl);
     }
 
 }

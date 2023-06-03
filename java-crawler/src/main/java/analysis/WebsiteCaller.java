@@ -3,6 +3,7 @@ package analysis;
 import model.ERequestStatus;
 import model.Request;
 import model.Website;
+import net.lightbody.bmp.BrowserMobProxy;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 public class WebsiteCaller implements AnalysisStep{

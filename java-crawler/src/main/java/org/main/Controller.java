@@ -16,8 +16,8 @@ import java.util.Scanner;
 
 public class Controller {
     private static final Logger logger = LogManager.getLogger(Controller.class);
-    private AnalysisResult analysisResult;
     private List<AnalysisStep> steps;
+    private AnalysisResult analysisResult;
     private DbWriter dbWriter;
     private DomainCsvReader csvReader;
 
@@ -28,6 +28,7 @@ public class Controller {
         this.analysisResult=new AnalysisResult();
         this.dbWriter=new DbWriter();
         this.csvReader=new DomainCsvReader();
+        DriverManager.initializeProxy();
 
         this.steps=new ArrayList<AnalysisStep>();
         steps.add(new CookieCleaner());
@@ -47,7 +48,6 @@ public class Controller {
         logger.info("Setting csvReader");
         csvReader.initializeReader();
 
-        int numberOfWebsitesToAnaylze=Configuration.WEBSITE_RANK_END-Configuration.WEBSITE_RANK_START+1;
         while (csvReader.hasNextUrl()) {
             int websiteRank= csvReader.getCurrentRank();
             logger.info("**********Analyzing Website Rank # "+websiteRank+"**********");
@@ -58,6 +58,7 @@ public class Controller {
             analyzeWebsite(website);
         }
         DriverManager.closeChromeDriver();
+        DriverManager.closeProxy();
         dbWriter.writeResultToDatabase(analysisResult);
     }
     private void analyzeWebsite(Website website){
@@ -68,10 +69,6 @@ public class Controller {
         }
 
         analysisResult.addRequest(website,request);
-    }
-
-    private void writeResultToDatabase(){
-        dbWriter.writeResultToDatabase(analysisResult);
     }
 
     private void fetchMyIP(){

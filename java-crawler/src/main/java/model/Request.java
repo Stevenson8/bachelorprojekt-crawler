@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Request {
-    private ERegion originRegion;
     private ERequestStatus requestStatus;
     private List<Cookie> cookies;
+    private ERegion originRegion;
     private String originalUrl;
     private boolean wasRedirected;
     private String redirectedUrl;
