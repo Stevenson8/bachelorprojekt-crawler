@@ -44,8 +44,11 @@ public class DatabaseHelper {
     }
 
     public void insertIntoCookie(String name, String value, int request){
+        name.replaceAll("\"","");
+        value.replaceAll("\"","");
+        String sql="";
         try {
-            String sql = String.format("insert into cookie (cookie_name,cookie_value,request) " +
+            sql = String.format("insert into cookie (cookie_name,cookie_value,request) " +
                     "values (\"%s\",\"%s\",%s)", name, value, request);
             stmt.execute(sql);
         } catch (Exception e) {

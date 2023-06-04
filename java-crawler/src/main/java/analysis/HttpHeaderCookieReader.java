@@ -89,8 +89,8 @@ public class HttpHeaderCookieReader implements AnalysisStep{
             int equalsIndex = pair.indexOf("=");
 
             if (equalsIndex != -1) {
-                String key = pair.substring(0, equalsIndex).trim();
-                String value = pair.substring(equalsIndex + 1).trim();
+                String key = pair.substring(0, equalsIndex).trim().replaceAll("\"","");
+                String value = pair.substring(equalsIndex + 1).trim().replaceAll("\"","");
                 result.put(key, value);
             }
         }
