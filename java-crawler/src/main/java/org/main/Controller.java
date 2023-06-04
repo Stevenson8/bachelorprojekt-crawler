@@ -5,8 +5,6 @@ import configuration.Configuration;
 import csvreader.DomainCsvReader;
 import database.DbWriter;
 import model.*;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -15,14 +13,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Controller {
-    private static final Logger logger = LogManager.getLogger(Controller.class);
     private List<AnalysisStep> steps;
     private AnalysisResult analysisResult;
     private DbWriter dbWriter;
     private DomainCsvReader csvReader;
 
     public Controller() {
-        logger.info("Setting up Webdriver");
         System.setProperty("webdriver.chrome.driver", Configuration.WEBDRIVER_PATH);
 
         this.analysisResult=new AnalysisResult();
@@ -45,14 +41,13 @@ public class Controller {
         if(Configuration.FETCH_IP_ADDRESS)
             fetchMyIP();
 
-        logger.info("Setting csvReader");
         csvReader.initializeReader();
 
         while (csvReader.hasNextUrl()) {
             int websiteRank= csvReader.getCurrentRank();
-            logger.info("**********Analyzing Website Rank # "+websiteRank+"**********");
+
             String url = csvReader.readNextUrl();
-            logger.info("\tRead URL: "+url);
+
             Website website = new Website(url);
             website.setWebsiteRank(websiteRank);
             analyzeWebsite(website);
@@ -72,7 +67,6 @@ public class Controller {
     }
 
     private void fetchMyIP(){
-        logger.info("Fetching my ip address");
         String result="";
 
         try {
@@ -85,7 +79,6 @@ public class Controller {
                 result = sc.nextLine();
 
             } else {
-                logger.error("Error when fetching My IP address");
             }
 
             conn.disconnect();
@@ -93,6 +86,5 @@ public class Controller {
             e.printStackTrace();
         }
         analysisResult.setUsedIP(result);
-        logger.info("Fetched ip adddress: "+result);
     }
 }

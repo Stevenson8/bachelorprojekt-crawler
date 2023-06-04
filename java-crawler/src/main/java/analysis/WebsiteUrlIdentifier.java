@@ -4,11 +4,8 @@ import model.EInternetProtocol;
 import model.ERequestStatus;
 import model.Request;
 import model.Website;
-import net.lightbody.bmp.BrowserMobProxy;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.remote.UnreachableBrowserException;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,7 +16,6 @@ import java.util.Date;
  * Stores the final URL and date of the request in the Website and Request Object.
  */
 public class WebsiteUrlIdentifier implements AnalysisStep{
-    private static final Logger logger = LogManager.getLogger(WebsiteUrlIdentifier.class);
     @Override
     public void execute(ChromeDriver driver, Website website, Request request) {
 
@@ -39,14 +35,12 @@ public class WebsiteUrlIdentifier implements AnalysisStep{
             finallyUsedUrl=httpsUrl;
         }
         catch (Exception eHttps){
-            logger.info("\tHTTPS Error for: "+httpsUrl);
             try {
                 driver.get(httpUrl);
                 request.setProtocol(EInternetProtocol.HTTP);
                 finallyUsedUrl=httpUrl;
             }
             catch (Exception eHttp){
-                logger.info("\tHTTP Error for: "+httpsUrl);
                 request.setProtocol(EInternetProtocol.NOTAPPLICABLE);
                 requestWasSuccessful=false;
             }

@@ -9,8 +9,6 @@ import net.lightbody.bmp.core.har.Har;
 import net.lightbody.bmp.core.har.HarEntry;
 import net.lightbody.bmp.core.har.HarNameValuePair;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.main.DriverManager;
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -19,13 +17,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class HttpHeaderCookieReader implements AnalysisStep{
-    private static final Logger logger = LogManager.getLogger(HttpHeaderCookieReader.class);
     @Override
     public void execute(ChromeDriver driver, Website website, Request request) {
 
         if(request.getRequestStatus().equals(ERequestStatus.ERRONEOUS))
             return;
 
+        //Get the Url to work with
         String requestUrl;
         if(request.wasRedirected())
             requestUrl=request.getRedirectedUrl();
@@ -38,17 +36,12 @@ public class HttpHeaderCookieReader implements AnalysisStep{
         //Fetch website
         driver.get(requestUrl);
 
-        //End listening to network
+        //End listening to network and get Har Object
         Har har=DriverManager.endListeningToNetworkAndGetHar();
 
-        for(var x:har.getLog().getPages()){
-            System.out.println("\t\t\t~~~~~~~Pages~~~~"+x.getTitle());
-        }
-
+        //Retrieve the Cookie Header from Har Object
         String cookieHeader=null;
         for(HarEntry entry:har.getLog().getEntries()){
-            System.out.println("\t\t\t********Entries Url~~~~"+entry.getRequest().getUrl());
-            System.out.println("\t\t\t\t********Entries Headers~~~~"+entry.getRequest().getHeaders().toString());
             if(entry.getRequest().getUrl().equals(requestUrl)) {
                 List<HarNameValuePair> headerPairs=entry.getRequest().getHeaders();
 
@@ -63,23 +56,17 @@ public class HttpHeaderCookieReader implements AnalysisStep{
         if(cookieHeader==null)
             return;
 
-        System.out.println("!!!!!Result Cookie Header: "+cookieHeader);
-
-
+        //Convert the header and write results to the request object
         Map<String, String> cookieMap=getMapOfCookies(cookieHeader);
 
         writeCookiesFromMapToRequest(cookieMap,request);
-
     }
 
-    //Example of format of the headers.get("cookie"):
-    //AEC=AUEFqZed4aHcneMBC6TcUAtqUH4-nLQclqayR846Rse50cS5uE_duHa_xw; __Secure-ENID=12.SE=C7GS;
     private Map<String, String> getMapOfCookies(String cookieHeaderString){
 
         Map<String, String> result = new HashMap<>();
         if(cookieHeaderString.equals(""))
             return result;
-
 
         // Split the string into individual key-value pairs
         String[] pairs = cookieHeaderString.split(";");
@@ -114,7 +101,6 @@ public class HttpHeaderCookieReader implements AnalysisStep{
     /**
      * Checks, whether an URL Path matches.
      * www.washington.edu and https://www.washington.edu/ would match e.g.
-     *
      */
     private boolean urlPathMatches(String url1, String url2){
 
@@ -144,6 +130,4 @@ public class HttpHeaderCookieReader implements AnalysisStep{
 
         return trimmedUrl1.equals(trimmedUrl2);
     }
-
-
 }
