@@ -9,6 +9,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 public class WebsiteCloser implements AnalysisStep{
     @Override
     public void execute(ChromeDriver driver, Website website, Request request) {
+        System.out.println("\tStep: Website Closer");
+
         DriverManager.closeChromeDriver();
     }
 }

@@ -10,18 +10,22 @@ import net.lightbody.bmp.core.har.HarEntry;
 import net.lightbody.bmp.core.har.HarNameValuePair;
 
 import org.main.DriverManager;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class HttpHeaderCookieReader implements AnalysisStep{
+public class CookieHeaderReader implements AnalysisStep{
     @Override
     public void execute(ChromeDriver driver, Website website, Request request) {
+        System.out.println("\tStep: Cookie Header Reader");
 
-        if(request.getRequestStatus().equals(ERequestStatus.ERRONEOUS))
+        ERequestStatus status=request.getRequestStatus();
+        if(status.equals(ERequestStatus.ERRONEOUS)||status.equals(ERequestStatus.TIMEOUT)){
             return;
+        }
 
         //Get the Url to work with
         String requestUrl;
@@ -34,7 +38,17 @@ public class HttpHeaderCookieReader implements AnalysisStep{
         DriverManager.startListeningToNetwork();
 
         //Fetch website
-        driver.get(requestUrl);
+        try {
+            driver.get(requestUrl);
+        }
+        catch (TimeoutException e){
+            System.err.println(e.getMessage());
+            request.setRequestStatus(ERequestStatus.TIMEOUT);
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            request.setRequestStatus(ERequestStatus.ERRONEOUS);
+        }
 
         //End listening to network and get Har Object
         Har har=DriverManager.endListeningToNetworkAndGetHar();
@@ -43,6 +57,7 @@ public class HttpHeaderCookieReader implements AnalysisStep{
         String cookieHeader=null;
         for(HarEntry entry:har.getLog().getEntries()){
             if(entry.getRequest().getUrl().equals(requestUrl)) {
+                System.out.println("\t-> Found headers in har object");
                 List<HarNameValuePair> headerPairs=entry.getRequest().getHeaders();
 
                 for(HarNameValuePair pair:headerPairs){

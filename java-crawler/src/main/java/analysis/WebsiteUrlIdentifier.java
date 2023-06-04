@@ -5,6 +5,7 @@ import model.ERequestStatus;
 import model.Request;
 import model.Website;
 
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.text.SimpleDateFormat;
@@ -18,12 +19,14 @@ import java.util.Date;
 public class WebsiteUrlIdentifier implements AnalysisStep{
     @Override
     public void execute(ChromeDriver driver, Website website, Request request) {
+        System.out.println("\tStep: Website UrlIdentifier");
 
         String httpsUrl="https://"+website.getBaseUrl().replaceAll("\\s","")+"/";
         String httpUrl="http://"+website.getBaseUrl().replaceAll("\\s","")+"/";
         String finallyUsedUrl="";
 
-        boolean requestWasSuccessful=true;
+        boolean requestWasSuccessful=false;
+        boolean requestHadTimeout=false;
 
         //Set time of the request
         request.setDate(getDate());
@@ -33,28 +36,44 @@ public class WebsiteUrlIdentifier implements AnalysisStep{
             driver.get(httpsUrl);
             request.setProtocol(EInternetProtocol.HTTPS);
             finallyUsedUrl=httpsUrl;
+            requestWasSuccessful=true;
+        }
+        catch (TimeoutException e){
+            System.err.println(e.getMessage());
+            requestHadTimeout=true;
         }
         catch (Exception eHttps){
+            System.err.println(eHttps.getMessage());
             try {
                 driver.get(httpUrl);
                 request.setProtocol(EInternetProtocol.HTTP);
                 finallyUsedUrl=httpUrl;
+                requestWasSuccessful=true;
+            }
+            catch (TimeoutException e){
+                System.err.println(e.getMessage());
+                requestHadTimeout=true;
             }
             catch (Exception eHttp){
-                request.setProtocol(EInternetProtocol.NOTAPPLICABLE);
-                requestWasSuccessful=false;
+                System.err.println(eHttp.getMessage());
             }
         }
 
         //Set Request Status
+        if(!requestWasSuccessful||requestHadTimeout)
+            request.setProtocol(EInternetProtocol.NOTAPPLICABLE);
 
-        if(!requestWasSuccessful){
-            request.setRequestStatus(ERequestStatus.ERRONEOUS);
-            return;
-        }
-        else {
+        if(requestWasSuccessful){
             request.setRequestStatus(ERequestStatus.OK);
             request.setOriginalUrl(finallyUsedUrl);
+        }
+        else if(requestHadTimeout){
+            request.setRequestStatus(ERequestStatus.TIMEOUT);
+            return;
+        }
+        else{
+            request.setRequestStatus(ERequestStatus.ERRONEOUS);
+            return;
         }
 
         //Set potential redirection

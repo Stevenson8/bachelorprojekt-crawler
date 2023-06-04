@@ -14,6 +14,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class DriverManager {
     public static List<ChromeDriver> currentDriver=new ArrayList<ChromeDriver>() {{
@@ -89,6 +90,8 @@ public class DriverManager {
         options.merge(capabilities);
 
         newDriver = new ChromeDriver(options);
+
+        newDriver.manage().timeouts().pageLoadTimeout(10,TimeUnit.SECONDS);
 
         return newDriver;
     }

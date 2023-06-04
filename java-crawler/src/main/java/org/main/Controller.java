@@ -32,7 +32,7 @@ public class Controller {
         steps.add(new WebsiteCaller());
         steps.add(new WebsiteCloser());
         steps.add(new WebsiteCaller());
-        steps.add(new HttpHeaderCookieReader());
+        steps.add(new CookieHeaderReader());
 
     }
 
@@ -58,6 +58,7 @@ public class Controller {
     }
     private void analyzeWebsite(Website website){
         Request request=new Request(Configuration.REGION_TO_ANALYZE);
+        System.out.println("# "+website.getWebsiteRank()+"\t Start Analyzing...");
 
         for (AnalysisStep step : steps) {
             step.execute(DriverManager.getCurrentChromeDriver(), website, request);
@@ -67,6 +68,8 @@ public class Controller {
     }
 
     private void fetchMyIP(){
+        System.out.println("Fetching my IP Address");
+
         String result="";
 
         try {
