@@ -9,6 +9,7 @@ import net.lightbody.bmp.core.har.Har;
 import net.lightbody.bmp.core.har.HarEntry;
 import net.lightbody.bmp.core.har.HarNameValuePair;
 
+import net.lightbody.bmp.core.har.HarResponse;
 import org.main.DriverManager;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -55,17 +56,33 @@ public class CookieHeaderReader implements AnalysisStep{
 
         //Retrieve the Cookie Header from Har Object
         String cookieHeader=null;
+        boolean headersNotYetFound=true;
+        boolean responseFailure=false;
+
         for(HarEntry entry:har.getLog().getEntries()){
-            if(entry.getRequest().getUrl().equals(requestUrl)) {
+            if(entry.getRequest().getUrl().equals(requestUrl)&&headersNotYetFound) {
                 System.out.println("\t-> Found headers in har object");
+                headersNotYetFound=false;
                 List<HarNameValuePair> headerPairs=entry.getRequest().getHeaders();
 
+                //Check if response is valid:
+                HarResponse response=entry.getResponse();
+                if(response.getError()!=null || response.getStatus()>=400 || response.getHeaders().size()==0)
+                    responseFailure=true;
+
+                //Fetch the cookie header from the headers
                 for(HarNameValuePair pair:headerPairs){
                     if(pair.getName().equals("Cookie")){
                         cookieHeader =pair.getValue();
                     }
                 }
             }
+        }
+
+        //If either the request or the response has no headers: mark request erroneous
+        if(headersNotYetFound||responseFailure){
+            request.setRequestStatus(ERequestStatus.ERRONEOUS);
+            return;
         }
 
         if(cookieHeader==null)

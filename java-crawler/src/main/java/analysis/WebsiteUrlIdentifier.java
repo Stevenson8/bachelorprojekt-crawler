@@ -34,6 +34,7 @@ public class WebsiteUrlIdentifier implements AnalysisStep{
         //Try HTTPS and/or HTTP Connection
         try {
             driver.get(httpsUrl);
+            driver.getNetworkConnection();
             request.setProtocol(EInternetProtocol.HTTPS);
             finallyUsedUrl=httpsUrl;
             requestWasSuccessful=true;
