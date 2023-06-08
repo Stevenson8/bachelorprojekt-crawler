@@ -16,7 +16,7 @@ public class DbWriter {
     }
 
     public void writeResultToDatabase(AnalysisResult analysisResultResult){
-        //Todo
+
         Map<Website, List<Request>> result=analysisResultResult.getAnalysisResult();
 
         String ipUsed=analysisResultResult.getUsedIP();

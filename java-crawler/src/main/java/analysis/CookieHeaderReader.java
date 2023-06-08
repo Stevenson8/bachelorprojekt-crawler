@@ -45,10 +45,12 @@ public class CookieHeaderReader implements AnalysisStep{
         catch (TimeoutException e){
             System.err.println(e.getMessage());
             request.setRequestStatus(ERequestStatus.TIMEOUT);
+            return;
         }
         catch (Exception e){
             System.err.println(e.getMessage());
             request.setRequestStatus(ERequestStatus.ERRONEOUS);
+            return;
         }
 
         //End listening to network and get Har Object
@@ -67,19 +69,21 @@ public class CookieHeaderReader implements AnalysisStep{
 
                 //Check if response is valid:
                 HarResponse response=entry.getResponse();
-                if(response.getError()!=null || response.getStatus()>=400 || response.getHeaders().size()==0)
-                    responseFailure=true;
+                if(response.getError()!=null || response.getStatus()>=400 || response.getHeaders().size()==0) {
+                    System.out.println("\tResponse Failure. Status Code: "+response.getStatus());
+                    responseFailure = true;
+                }
 
                 //Fetch the cookie header from the headers
                 for(HarNameValuePair pair:headerPairs){
-                    if(pair.getName().equals("Cookie")){
+                    if(pair.getName().equalsIgnoreCase("Cookie")){
                         cookieHeader =pair.getValue();
                     }
                 }
             }
         }
 
-        //If either the request or the response has no headers: mark request erroneous
+        //If either the request/response has no headers or the response has failed: mark request erroneous
         if(headersNotYetFound||responseFailure){
             request.setRequestStatus(ERequestStatus.ERRONEOUS);
             return;

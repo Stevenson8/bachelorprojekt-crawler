@@ -34,7 +34,7 @@ public class WebsiteUrlIdentifier implements AnalysisStep{
         //Try HTTPS and/or HTTP Connection
         try {
             driver.get(httpsUrl);
-            driver.getNetworkConnection();
+            //driver.getNetworkConnection();
             request.setProtocol(EInternetProtocol.HTTPS);
             finallyUsedUrl=httpsUrl;
             requestWasSuccessful=true;
@@ -43,6 +43,7 @@ public class WebsiteUrlIdentifier implements AnalysisStep{
             System.err.println(e.getMessage());
             requestHadTimeout=true;
         }
+        //If no TimeOut catched, we catch all Exceptions and try the http request instead of https:
         catch (Exception eHttps){
             System.err.println(eHttps.getMessage());
             try {
