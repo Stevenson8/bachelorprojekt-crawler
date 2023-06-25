@@ -21,8 +21,6 @@ import java.util.regex.Pattern;
 public class CookieHeaderReader implements AnalysisStep{
     @Override
     public void execute(ChromeDriver driver, Website website, Request request) {
-        System.out.println("\tStep: Cookie Header Reader");
-
         ERequestStatus status=request.getRequestStatus();
         if(status.equals(ERequestStatus.ERRONEOUS)||status.equals(ERequestStatus.TIMEOUT)){
             return;
@@ -43,12 +41,10 @@ public class CookieHeaderReader implements AnalysisStep{
             driver.get(requestUrl);
         }
         catch (TimeoutException e){
-            System.err.println(e.getMessage());
             request.setRequestStatus(ERequestStatus.TIMEOUT);
             return;
         }
         catch (Exception e){
-            System.err.println(e.getMessage());
             request.setRequestStatus(ERequestStatus.ERRONEOUS);
             return;
         }
@@ -63,15 +59,13 @@ public class CookieHeaderReader implements AnalysisStep{
 
         for(HarEntry entry:har.getLog().getEntries()){
             if(entry.getRequest().getUrl().equals(requestUrl)&&headersNotYetFound) {
-                System.out.println("\t-> Found headers in har object");
                 headersNotYetFound=false;
                 List<HarNameValuePair> headerPairs=entry.getRequest().getHeaders();
 
                 //Check if response is valid:
                 HarResponse response=entry.getResponse();
                 if(response.getError()!=null || response.getStatus()>=400 || response.getHeaders().size()==0) {
-                    System.out.println("\tResponse Failure. Status Code: "+response.getStatus());
-                    responseFailure = true;
+                      responseFailure = true;
                 }
 
                 //Fetch the cookie header from the headers

@@ -15,7 +15,6 @@ public class DatabaseHelper {
 
     public DatabaseHelper() {
         try {
-            //Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection(DB_CONNECTION_URL, USER, PASS);
             stmt = con.createStatement();
         } catch (SQLException e) {

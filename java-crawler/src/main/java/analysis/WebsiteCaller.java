@@ -10,7 +10,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 public class WebsiteCaller implements AnalysisStep{
     @Override
     public void execute(ChromeDriver driver, Website website, Request request) {
-        System.out.println("\tStep: Website Caller");
 
         ERequestStatus status=request.getRequestStatus();
         if(status.equals(ERequestStatus.ERRONEOUS)||status.equals(ERequestStatus.TIMEOUT)){

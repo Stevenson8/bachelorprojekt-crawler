@@ -19,8 +19,6 @@ import java.util.Date;
 public class WebsiteUrlIdentifier implements AnalysisStep{
     @Override
     public void execute(ChromeDriver driver, Website website, Request request) {
-        System.out.println("\tStep: Website UrlIdentifier");
-
         String httpsUrl="https://"+website.getBaseUrl().replaceAll("\\s","")+"/";
         String httpUrl="http://"+website.getBaseUrl().replaceAll("\\s","")+"/";
         String finallyUsedUrl="";
@@ -34,7 +32,6 @@ public class WebsiteUrlIdentifier implements AnalysisStep{
         //Try HTTPS and/or HTTP Connection
         try {
             driver.get(httpsUrl);
-            //driver.getNetworkConnection();
             request.setProtocol(EInternetProtocol.HTTPS);
             finallyUsedUrl=httpsUrl;
             requestWasSuccessful=true;
